@@ -5,10 +5,12 @@ import Header from './Header';
 import Footer from './footer'; 
 import { useState } from "react"
 import Tasks from './Tasks';
+import AddTask from './AddTask';
 
 
 function App() {
-  
+  const [showAddTask, setShowAddTask] = useState(false);
+
 
 const [tasks, setTasks] = useState([
 
@@ -56,15 +58,28 @@ const onTaskReminder=(id) =>{
     tasks.map((task)=> task.id===id?{...task,reminder:!task.reminder}:task)
   )
 }  
-  
 
-  return (
-    <div className="container">
-      <Header/>
-       { tasks.length>0 ?
-      <Tasks tasks={tasks} onDelete={deleteTask}/>
-       :'No Task Available'}
+const addTask = (task) => {
+  const id = Math.floor(Math.random()*10000+1);
+  console.log(id);
+
+  const newTask = { id, ...task}
+  setTasks([...tasks, newTask])
+}
+
+return (
+  <div className="container">
+    <Header onAdd={ () => setShowAddTask(!showAddTask)}/>
+    {showAddTask && <AddTask onAdd={addTask}/>}
+    {tasks.length > 0 ? 
+    <Tasks 
+      tasks={tasks}
+      onDelete={deleteTask}
+      onReminder={onTaskReminder}
+     />
+    : 'No Tasks Available for Today'}
   </div>
+ 
   );
   }
 
